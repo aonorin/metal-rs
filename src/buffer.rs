@@ -1,4 +1,4 @@
-// Copyright 2016 metal-rs developers
+// Copyright 2016 GFX developers
 //
 // Licensed under the Apache License, Version 2.0, <LICENSE-APACHE or
 // http://apache.org/licenses/LICENSE-2.0> or the MIT license <LICENSE-MIT or
@@ -31,7 +31,7 @@ impl MTLBuffer {
         }
     }
 
-    pub fn invalidate_range(&self, range: NSRange) {
+    pub fn did_modify_range(&self, range: NSRange) {
         unsafe {
             msg_send![self.0, didModifyRange:range]
         }

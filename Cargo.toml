@@ -1,17 +1,20 @@
 [package]
-name = "metal"
-version = "0.0.1"
-authors = ["Felix Kaaman <trundmatu@gmail.com>"]
+name = "metal-rs"
+version = "0.4.2"
+description = "Rust bindings for Metal"
+documentation = "https://docs.rs/crate/metal-rs"
+homepage = "https://github.com/gfx-rs/metal-rs"
+repository = "https://github.com/gfx-rs/metal-rs"
+authors = ["GFX Developers"]
 readme = "README.md"
 keywords = ["metal", "graphics", "bindings"]
 license = "MIT OR Apache-2.0"
 
 [dependencies]
-cocoa = "0.2.5"
-bitflags = "0.7"
+cocoa = "0.9.0"
+bitflags = "0.9"
 libc = "0.2"
 objc-foundation = "0.1"
-objc_id = "0.0.2"
 block = "0.1.5"
 
 [dependencies.objc]
@@ -19,7 +22,7 @@ version = "0.2.1"
 features = ["objc_exception"]
 
 [dev-dependencies]
-winit = "0.4.9"
+winit = "0.7"
 sema = "0.1.4"
 
 [[example]]
@@ -37,3 +40,7 @@ path = "examples/reflection/main.rs"
 [[example]]
 name = "caps"
 path = "examples/caps/main.rs"
+
+[[example]]
+name = "indirect"
+path = "examples/indirect/main.rs"

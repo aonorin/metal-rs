@@ -1,4 +1,4 @@
-// Copyright 2016 metal-rs developers
+// Copyright 2016 GFX developers
 //
 // Licensed under the Apache License, Version 2.0, <LICENSE-APACHE or
 // http://apache.org/licenses/LICENSE-2.0> or the MIT license <LICENSE-MIT or
@@ -12,7 +12,7 @@ use block::Block;
 use super::{id, NSObjectPrototype, NSObjectProtocol};
 
 use renderpass::MTLRenderPassDescriptor;
-use encoder::{MTLParallelRenderCommandEncoder, MTLRenderCommandEncoder};
+use encoder::{MTLParallelRenderCommandEncoder, MTLRenderCommandEncoder, MTLBlitCommandEncoder};
 
 #[repr(u32)]
 #[allow(non_camel_case_types)]
@@ -38,7 +38,7 @@ pub enum MTLCommandBufferError {
     InvalidResource = 9,
 }
 
-type MTLCommandBufferHandler = Block<(MTLCommandBuffer), ()>;
+type _MTLCommandBufferHandler = Block<(MTLCommandBuffer), ()>;
 
 pub enum MTLCommandBufferPrototype {}
 pub type MTLCommandBuffer = id<(MTLCommandBufferPrototype, (NSObjectPrototype, ()))>;
@@ -94,13 +94,13 @@ impl<'a> MTLCommandBuffer {
         }
     }
 
-    /*pub fn new_blit_command_encoder(&self) -> id {
+    pub fn new_blit_command_encoder(&self) -> MTLBlitCommandEncoder {
         unsafe {
             msg_send![self.0, blitCommandEncoder]
         }
     }
 
-    pub fn new_compute_command_encoder(&self) -> id {
+    /*pub fn new_compute_command_encoder(&self) -> id {
         unsafe {
             msg_send![self.0, blitCommandEncoder]
         }

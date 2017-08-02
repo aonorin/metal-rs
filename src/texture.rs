@@ -1,4 +1,4 @@
-// Copyright 2016 metal-rs developers
+// Copyright 2016 GFX developers
 //
 // Licensed under the Apache License, Version 2.0, <LICENSE-APACHE or
 // http://apache.org/licenses/LICENSE-2.0> or the MIT license <LICENSE-MIT or
@@ -33,12 +33,12 @@ pub enum MTLTextureType {
 
 bitflags! {
     #[allow(non_upper_case_globals)]
-    pub flags MTLTextureUsage: NSUInteger {
-        const MTLTextureUsageUnknown         = 0x0000,
-        const MTLTextureUsageShaderRead      = 0x0001,
-        const MTLTextureUsageShaderWrite     = 0x0002,
-        const MTLTextureUsageRenderTarget    = 0x0004,
-        const MTLTextureUsagePixelFormatView = 0x0010,
+    pub struct MTLTextureUsage: NSUInteger {
+        const MTLTextureUsageUnknown         = 0x0000;
+        const MTLTextureUsageShaderRead      = 0x0001;
+        const MTLTextureUsageShaderWrite     = 0x0002;
+        const MTLTextureUsageRenderTarget    = 0x0004;
+        const MTLTextureUsagePixelFormatView = 0x0010;
     }
 }
 

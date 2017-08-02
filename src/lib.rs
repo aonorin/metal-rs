@@ -1,12 +1,9 @@
-// Copyright 2016 metal-rs developers
+// Copyright 2017 GFX developers
 //
 // Licensed under the Apache License, Version 2.0, <LICENSE-APACHE or
 // http://apache.org/licenses/LICENSE-2.0> or the MIT license <LICENSE-MIT or
 // http://opensource.org/licenses/MIT>, at your option. This file may not be
 // copied, modified, or distributed except according to those terms.
-
-#![crate_name = "metal"]
-#![crate_type = "rlib"]
 
 #![allow(non_snake_case)]
 #![allow(non_upper_case_globals)]
@@ -18,7 +15,6 @@ extern crate libc;
 #[macro_use]
 extern crate objc;
 extern crate objc_foundation;
-extern crate objc_id;
 extern crate block;
 
 use objc::Message;
@@ -125,6 +121,13 @@ pub enum NSArrayPrototype {}
 pub type NSArray<T> = id<(NSArrayPrototype, (NSObjectPrototype, (T)))>;
 
 impl<T> NSArray<T> where T: Any {
+    pub fn array_with_objects(slice: &[T]) -> Self {
+        unsafe {
+            msg_send![Self::class(), arrayWithObjects:slice.as_ptr()
+                                                count:slice.len() as u64]
+        }
+    }
+
     pub fn object_at(&self, index: u64) -> T {
         unsafe {
             msg_send![self.0, objectAtIndex:index]
@@ -157,6 +160,12 @@ impl NSAutoreleasePool {
     pub fn init(&self) -> Self {
         unsafe {
             msg_send![self.0, init]
+        }
+    }
+
+    pub fn drain(&self) {
+        unsafe {
+            msg_send![self.0, drain]
         }
     }
 }
@@ -193,6 +202,12 @@ pub enum CAMetalLayerPrototype {}
 pub type CAMetalLayer = id<(CAMetalLayerPrototype, (NSObjectPrototype, ()))>;
 
 impl CAMetalLayer {
+    pub fn new() -> CAMetalLayer {
+        unsafe {
+            msg_send![Self::class(), new]
+        }
+    }
+
     pub fn layer() -> CAMetalLayer {
         unsafe {
             msg_send![Self::class(), layer]
@@ -245,6 +260,18 @@ impl CAMetalLayer {
         }
     }
 
+    pub fn set_edge_antialiasing_mask(&self, mask: u64) {
+        unsafe {
+            msg_send![self.0, setEdgeAntialiasingMask:mask]
+        }
+    }
+
+    pub fn set_masks_to_bounds(&self, masks: bool) {
+        unsafe {
+            msg_send![self.0, setMasksToBounds:masks]
+        }
+    }
+
     pub fn remove_all_animations(&self) {
         unsafe {
             msg_send![self.0, removeAllAnimations];
@@ -286,6 +313,7 @@ mod library;
 mod argument;
 mod vertexdescriptor;
 mod depthstencil;
+mod heap;
 
 pub use constants::*;
 pub use types::*;
@@ -304,4 +332,5 @@ pub use library::*;
 pub use argument::*;
 pub use vertexdescriptor::*;
 pub use depthstencil::*;
+pub use heap::*;
 

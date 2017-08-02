@@ -1,4 +1,4 @@
-// Copyright 2016 metal-rs developers
+// Copyright 2016 GFX developers
 //
 // Licensed under the Apache License, Version 2.0, <LICENSE-APACHE or
 // http://apache.org/licenses/LICENSE-2.0> or the MIT license <LICENSE-MIT or
@@ -13,6 +13,7 @@ use super::{id, NSObjectPrototype, NSObjectProtocol};
 
 #[repr(u64)]
 #[allow(non_camel_case_types)]
+#[derive(Clone, Copy, PartialEq, Eq, Hash, Debug)]
 pub enum MTLPurgeableState {
     KeepCurrent = 1,
     NonVolatile = 2,
@@ -22,6 +23,7 @@ pub enum MTLPurgeableState {
 
 #[repr(u64)]
 #[allow(non_camel_case_types)]
+#[derive(Clone, Copy, PartialEq, Eq, Hash, Debug)]
 pub enum MTLCPUCacheMode {
     DefaultCache = 0,
     WriteCombined = 1,
@@ -29,6 +31,7 @@ pub enum MTLCPUCacheMode {
 
 #[repr(u64)]
 #[allow(non_camel_case_types)]
+#[derive(Clone, Copy, PartialEq, Eq, Hash, Debug)]
 pub enum MTLStorageMode {
     Shared  = 0,
     Managed = 1,
@@ -42,18 +45,25 @@ pub const MTLResourceStorageModeMask: NSUInteger = (0xf << MTLResourceStorageMod
 
 bitflags! {
     #[allow(non_upper_case_globals)]
-    pub flags MTLResourceOptions: NSUInteger {
-        const MTLResourceCPUCacheModeDefaultCache  = (MTLCPUCacheMode::DefaultCache as NSUInteger) << MTLResourceCPUCacheModeShift,
-        const MTLResourceCPUCacheModeWriteCombined = (MTLCPUCacheMode::WriteCombined as NSUInteger) << MTLResourceCPUCacheModeShift,
+    pub struct MTLResourceOptions: NSUInteger {
+        const MTLResourceCPUCacheModeDefaultCache  = (MTLCPUCacheMode::DefaultCache as NSUInteger) << MTLResourceCPUCacheModeShift;
+        const MTLResourceCPUCacheModeWriteCombined = (MTLCPUCacheMode::WriteCombined as NSUInteger) << MTLResourceCPUCacheModeShift;
 
-        const MTLResourceStorageModeShared  = (MTLStorageMode::Shared as NSUInteger)  << MTLResourceStorageModeShift,
-        const MTLResourceStorageModeManaged = (MTLStorageMode::Managed as NSUInteger) << MTLResourceStorageModeShift,
-        const MTLResourceStorageModePrivate = (MTLStorageMode::Private as NSUInteger) << MTLResourceStorageModeShift,
+        const MTLResourceStorageModeShared  = (MTLStorageMode::Shared as NSUInteger)  << MTLResourceStorageModeShift;
+        const MTLResourceStorageModeManaged = (MTLStorageMode::Managed as NSUInteger) << MTLResourceStorageModeShift;
+        const MTLResourceStorageModePrivate = (MTLStorageMode::Private as NSUInteger) << MTLResourceStorageModeShift;
 
         // Deprecated spellings
-        const MTLResourceOptionCPUCacheModeDefault       = MTLResourceCPUCacheModeDefaultCache.bits,
-        const MTLResourceOptionCPUCacheModeWriteCombined = MTLResourceCPUCacheModeWriteCombined.bits,
+        const MTLResourceOptionCPUCacheModeDefault       = MTLResourceCPUCacheModeDefaultCache.bits;
+        const MTLResourceOptionCPUCacheModeWriteCombined = MTLResourceCPUCacheModeWriteCombined.bits;
     }
+}
+
+#[derive(Clone, Copy, PartialEq, Eq, Hash, Debug)]
+#[repr(C)]
+pub struct MTLSizeAndAlign {
+    pub size: NSUInteger,
+    pub align: NSUInteger,
 }
 
 

@@ -1,4 +1,11 @@
-use cocoa::foundation::{NSUInteger};
+// Copyright 2017 GFX developers
+//
+// Licensed under the Apache License, Version 2.0, <LICENSE-APACHE or
+// http://apache.org/licenses/LICENSE-2.0> or the MIT license <LICENSE-MIT or
+// http://opensource.org/licenses/MIT>, at your option. This file may not be
+// copied, modified, or distributed except according to those terms.
+
+use cocoa::foundation::{NSRange, NSUInteger};
 use objc::runtime::Class;
 use objc_foundation::{NSString, INSString};
 
@@ -6,6 +13,7 @@ use super::{id, NSObjectPrototype, NSObjectProtocol};
 
 use libc;
 
+use resource::MTLResource;
 use texture::MTLTexture;
 use buffer::MTLBuffer;
 use pipeline::MTLRenderPipelineState;
@@ -87,7 +95,7 @@ pub struct MTLViewport {
 }
 
 #[repr(C)]
-#[derive(Debug)]
+#[derive(Copy, Clone, Debug)]
 pub struct MTLDrawPrimitivesIndirectArguments {
     pub vertexCount: u32,
     pub instanceCount: u32,
@@ -96,7 +104,7 @@ pub struct MTLDrawPrimitivesIndirectArguments {
 }
 
 #[repr(C)]
-#[derive(Debug)]
+#[derive(Copy, Clone, Debug)]
 pub struct MTLDrawIndexedPrimitivesIndirectArguments {
     pub indexCount: u32,
     pub instanceCount: u32,
@@ -363,14 +371,16 @@ impl MTLRenderCommandEncoder {
         }
     }
 
-    pub fn draw_indexed_primitives_instanced(&self, primitive_type: MTLPrimitiveType, index_count: u64, index_type: MTLIndexType, index_buffer: MTLBuffer, index_buffer_offset: u64, instance_count: u64) {
+    pub fn draw_indexed_primitives_instanced(&self, primitive_type: MTLPrimitiveType, index_count: u64, index_type: MTLIndexType, index_buffer: MTLBuffer, index_buffer_offset: u64, instance_count: u64, base_vertex: i64, base_instance: u64) {
         unsafe {
             msg_send![self.0, drawIndexedPrimitives:primitive_type
                                          indexCount:index_count
                                           indexType:index_type
                                         indexBuffer:index_buffer.0
                                   indexBufferOffset:index_buffer_offset
-                                      instanceCount:instance_count]
+                                      instanceCount:instance_count
+                                         baseVertex:base_vertex
+                                       baseInstance:base_instance]
         }
     }
 
@@ -390,3 +400,111 @@ impl NSObjectProtocol for MTLRenderCommandEncoder {
     }
 }
 
+
+pub enum MTLBlitCommandEncoderPrototype {}
+pub type MTLBlitCommandEncoder = id<
+    (MTLBlitCommandEncoderPrototype,
+        (MTLCommandEncoderPrototype,
+            (NSObjectPrototype, ())))>;
+
+impl MTLBlitCommandEncoder {
+
+    pub fn synchronize_resource(&self, resource: MTLResource) {
+        unsafe {
+            msg_send![self.0, synchronizeResource:resource]
+        }
+    }
+
+}
+
+impl NSObjectProtocol for MTLBlitCommandEncoder {
+    unsafe fn class() -> &'static Class {
+        Class::get("MTLBlitCommandEncoder").unwrap()
+    }
+}
+
+
+pub enum MTLComputeCommandEncoderPrototype {}
+pub type MTLComputeCommandEncoder = id<
+    (MTLComputeCommandEncoderPrototype,
+        (MTLCommandEncoderPrototype,
+            (NSObjectPrototype, ())))>;
+
+impl MTLComputeCommandEncoder {
+
+    pub fn set_render_pipeline_state(&self) {
+    }
+
+}
+
+impl NSObjectProtocol for MTLComputeCommandEncoder {
+    unsafe fn class() -> &'static Class {
+        Class::get("MTLComputeCommandEncoder").unwrap()
+    }
+}
+
+
+pub enum MTLArgumentEncoderPrototype {}
+pub type MTLArgumentEncoder = id<
+    (MTLArgumentEncoderPrototype,
+        (NSObjectPrototype, ()))>;
+
+impl NSObjectProtocol for MTLArgumentEncoder {
+    unsafe fn class() -> &'static Class {
+        Class::get("MTLArgumentEncoder").unwrap()
+    }
+}
+
+impl MTLArgumentEncoder {
+    pub fn encoded_length(&self) -> NSUInteger {
+        unsafe {
+            msg_send![self.0, encodedLength]
+        }
+    }
+
+    pub fn alignment(&self) -> NSUInteger {
+        unsafe {
+            msg_send![self.0, alignment]
+        }
+    }
+
+    pub fn set_argument_buffer(&self, buffer: MTLBuffer, offset: NSUInteger) {
+        unsafe {
+            msg_send![self.0, setArgumentBuffer:buffer
+                                         offset:offset]
+        }
+    }
+
+    pub fn set_buffers(&self, data: &[MTLBuffer], offset: NSUInteger) {
+        let range = NSRange {
+            location: offset,
+            length: data.len() as NSUInteger,
+        };
+        unsafe {
+            msg_send![self.0, setBuffers:data.as_ptr()
+                               withRange:range]
+        }
+    }
+
+    pub fn set_textures(&self, data: &[MTLTexture], offset: NSUInteger) {
+        let range = NSRange {
+            location: offset,
+            length: data.len() as NSUInteger,
+        };
+        unsafe {
+            msg_send![self.0, setTextures:data.as_ptr()
+                                withRange:range]
+        }
+    }
+
+    pub fn set_sampler_states(&self, data: &[MTLSamplerState], offset: NSUInteger) {
+        let range = NSRange {
+            location: offset,
+            length: data.len() as NSUInteger,
+        };
+        unsafe {
+            msg_send![self.0, setSamplerStates:data.as_ptr()
+                                     withRange:range]
+        }
+    }
+}

@@ -1,4 +1,4 @@
-// Copyright 2016 metal-rs developers
+// Copyright 2016 GFX developers
 //
 // Licensed under the Apache License, Version 2.0, <LICENSE-APACHE or
 // http://apache.org/licenses/LICENSE-2.0> or the MIT license <LICENSE-MIT or
@@ -50,13 +50,13 @@ pub enum MTLBlendOperation {
 }
 
 bitflags! {
-    pub flags MTLColorWriteMask: NSUInteger {
-        const MTLColorWriteMaskNone  = 0,
-        const MTLColorWriteMaskRed   = 0x1 << 3,
-        const MTLColorWriteMaskGreen = 0x1 << 2,
-        const MTLColorWriteMaskBlue  = 0x1 << 1,
-        const MTLColorWriteMaskAlpha = 0x1 << 0,
-        const MTLColorWriteMaskAll   = 0xf
+    pub struct MTLColorWriteMask: NSUInteger {
+        const MTLColorWriteMaskNone  = 0;
+        const MTLColorWriteMaskRed   = 0x1 << 3;
+        const MTLColorWriteMaskGreen = 0x1 << 2;
+        const MTLColorWriteMaskBlue  = 0x1 << 1;
+        const MTLColorWriteMaskAlpha = 0x1 << 0;
+        const MTLColorWriteMaskAll   = 0xf;
     }
 }
 
@@ -404,8 +404,12 @@ impl<'a> MTLRenderPipelineDescriptor {
     }
 
     pub fn serialize_vertex_data(&self) -> *mut libc::c_void {
+        use std::ptr;
+        let flags = 0;
+        let err: *mut id = ptr::null_mut();
         unsafe {
-            msg_send![self.0, serializedVertexData]
+            msg_send![self.0, newSerializedVertexDataWithFlags:flags
+                              error:err]
         }
     }
 

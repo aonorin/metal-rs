@@ -1,11 +1,11 @@
-// Copyright 2016 metal-rs developers
+// Copyright 2016 GFX developers
 //
 // Licensed under the Apache License, Version 2.0, <LICENSE-APACHE or
 // http://apache.org/licenses/LICENSE-2.0> or the MIT license <LICENSE-MIT or
 // http://opensource.org/licenses/MIT>, at your option. This file may not be
 // copied, modified, or distributed except according to those terms.
 
-extern crate metal;
+extern crate metal_rs as metal;
 
 use metal::*;
 
@@ -45,8 +45,8 @@ fn main() {
     let device = create_system_default_device();
 
     let options = MTLCompileOptions::new();
-    let library = device.new_library_with_source(PROGRAM, options);
-    let (vs, ps) = (library.get_function("vs").unwrap(), library.get_function("ps").unwrap());
+    let library = device.new_library_with_source(PROGRAM, options).unwrap();
+    let (vs, ps) = (library.get_function("vs"), library.get_function("ps"));
 
     let vertex_desc = MTLVertexDescriptor::new();
 
@@ -63,5 +63,4 @@ fn main() {
         0x8,
         0x0
     );
-
 }

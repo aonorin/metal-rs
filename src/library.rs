@@ -1,4 +1,4 @@
-// Copyright 2016 metal-rs developers
+// Copyright 2017 GFX developers
 //
 // Licensed under the Apache License, Version 2.0, <LICENSE-APACHE or
 // http://apache.org/licenses/LICENSE-2.0> or the MIT license <LICENSE-MIT or
@@ -96,8 +96,10 @@ impl NSObjectProtocol for MTLFunction {
 #[repr(u64)]
 #[allow(non_camel_case_types)]
 pub enum MTLLanguageVersion {
-    V1_0 = (1 << 16),
-    V1_1 = (1 << 16) + 1,
+    V1_0 = 0x10000,
+    V1_1 = 0x10001,
+    V1_2 = 0x10002,
+    V2_0 = 0x20000,
 }
 
 
